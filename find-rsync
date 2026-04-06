@@ -1,0 +1,20 @@
+On App Server 3 at location /var/www/html/beta find out all files (not directories) having .css extension. b. Copy all those files along with their parent directory structure to location /beta on same server.
+
+Solution --
+a) Find all .css files (files only, not directories)
+find /var/www/html/beta -type f -name "*.css"
+b) Copy those files with their parent directory structure to /beta
+cd /var/www/html/beta
+find . -type f -name "*.css" -exec cp --parents {} /beta \;
+
+Alternative (more efficient with rsync)
+rsync -av --include="*/" --include="*.css" --exclude="*" /var/www/html/beta/ /beta/
+
+
+⚖️ Key Differences
+Feature	            find 🧭	                      rsync 🚚
+Primary purpose	    Search & filter files	        Copy & sync files
+Modifies files	    Only if you tell it (-exec)	  Yes (copy/sync by default)
+Directory handling	Just traverses	              Preserves structure automatically
+Efficiency	        Basic	                        Very optimized (delta transfer)
+Remote support	    No	                          Yes (SSH, remote sync)
